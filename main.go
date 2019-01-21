@@ -20,6 +20,7 @@ func (p *Proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		resp := QueryUPS(tracking)
+		defer resp.Body.Close()
 
 		for k, v := range resp.Header {
 			w.Header().Set(k, v[0])

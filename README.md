@@ -19,4 +19,4 @@ UPS_ACCESS_KEY | Access Key generated on UPS devkit page
 Install Go and run:
 
 ```
-UPS_USERNAME="login" UPS_PASSWORD="pass" UPS_ACCESS_KEY="access" go run *
+UPS_USERNAME="login" UPS_PASSWORD="pass" UPS_ACCESS_KEY="access" go run *.go
