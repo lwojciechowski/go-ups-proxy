@@ -10,7 +10,12 @@ type Proxy struct{}
 
 func NewProxy() *Proxy { return &Proxy{} }
 
+func enableCors(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+}
+
 func (p *Proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	switch r.URL.Path {
 	case "/ups":
 		tracking := r.URL.Query().Get("tracking")
