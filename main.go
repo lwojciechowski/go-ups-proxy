@@ -41,7 +41,7 @@ func (p *Proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func main() {
 	proxy := NewProxy()
 	log.Println("Server running")
-	err := http.ListenAndServe(":54321", proxy)
+	err := http.ListenAndServeTLS(":54321", "localhost.crt", "localhost.key", proxy)
 
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err.Error())
