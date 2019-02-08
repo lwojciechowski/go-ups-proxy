@@ -4,6 +4,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
 )
 
 type Proxy struct{}
@@ -41,6 +42,13 @@ func (p *Proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func main() {
 	proxy := NewProxy()
 	log.Println("Server running")
+
+	port := os.Getenv("PORT")
+
+	if port == "" {
+		port = ":54321"
+	}
+
 	err := http.ListenAndServeTLS(":54321", "localhost.crt", "localhost.key", proxy)
 
 	if err != nil {
