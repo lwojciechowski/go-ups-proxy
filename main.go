@@ -46,10 +46,10 @@ func main() {
 	port := os.Getenv("PORT")
 
 	if port == "" {
-		port = ":54321"
+		port = "54321"
 	}
 
-	err := http.ListenAndServe(port, proxy)
+	err := http.ListenAndServe(":"+port, proxy)
 
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err.Error())
