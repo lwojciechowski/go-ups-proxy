@@ -49,7 +49,7 @@ func main() {
 		port = ":54321"
 	}
 
-	err := http.ListenAndServeTLS(":54321", "localhost.crt", "localhost.key", proxy)
+	err := http.ListenAndServe(port, proxy)
 
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err.Error())
