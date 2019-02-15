@@ -7,16 +7,7 @@ import (
 	"os"
 )
 
-type Proxy struct{}
-
-func NewProxy() *Proxy { return &Proxy{} }
-
-func enableCors(w *http.ResponseWriter) {
-	(*w).Header().Set("Access-Control-Allow-Origin", "*")
-}
-
-func (p *Proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
+func handleRequests(w http.ResponseWriter, r *http.Request) {
 	switch r.URL.Path {
 	case "/ups":
 		tracking := r.URL.Query().Get("tracking")
@@ -39,17 +30,26 @@ func (p *Proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func main() {
-	proxy := NewProxy()
-	log.Println("Server running")
+func enableCors(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		next.ServeHTTP(w, r)
+	})
+}
 
+func main() {
+	finalHandler := http.HandlerFunc(handleRequests)
+	mux := http.NewServeMux()
+	mux.Handle("/", enableCors(finalHandler))
+
+	log.Println("Server running")
 	port := os.Getenv("PORT")
 
 	if port == "" {
 		port = "54321"
 	}
 
-	err := http.ListenAndServe(":"+port, proxy)
+	err := http.ListenAndServe(":"+port, mux)
 
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err.Error())
