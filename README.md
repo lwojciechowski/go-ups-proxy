@@ -29,3 +29,7 @@ Install Go and run:
 ```
 UPS_USERNAME="login" UPS_PASSWORD="pass" UPS_ACCESS_KEY="access" go run *.go
 ```
+
+###
+Prod push: git push production enable-cors:master
+Dev push: git push heroku enable-cors:master

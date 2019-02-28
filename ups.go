@@ -49,7 +49,7 @@ func QueryUPS(tracking string) *http.Response {
 		pw.Close()
 	}()
 
-	isProd := true
+	isProd := false
 	upsTrackingURL := "https://wwwcie.ups.com/rest/Track"
 
 	if isProd {
