@@ -8,7 +8,6 @@ import (
 )
 
 const (
-	upsTrackingURL   = "https://wwwcie.ups.com/rest/Track"
 	upsRequestString = `
 		{
 			"UPSSecurity": {
@@ -49,6 +48,13 @@ func QueryUPS(tracking string) *http.Response {
 		upsRequestTpl.Execute(pw, vars)
 		pw.Close()
 	}()
+
+	isProd := true
+	upsTrackingURL := "https://wwwcie.ups.com/rest/Track"
+
+	if isProd {
+		upsTrackingURL = "https://onlinetools.ups.com/webservices/Track"
+	}
 
 	resp, _ := client.Post(upsTrackingURL, "application/json", pr)
 
