@@ -36,13 +36,12 @@ var upsRequestTpl = template.Must(template.New("upsRequest").Parse(upsRequestStr
 
 func getTrackingURL() string {
 	isProd := os.Getenv("APP_ENV") == "production"
-	upsTrackingURL := "https://wwwcie.ups.com/rest/Track"
 
 	if isProd {
-		upsTrackingURL = "https://onlinetools.ups.com/rest/Track"
+		return "https://onlinetools.ups.com/rest/Track"
+	} else {
+		return "https://wwwcie.ups.com/rest/Track"
 	}
-
-	return upsTrackingURL
 }
 
 func QueryUPS(tracking string) *http.Response {
