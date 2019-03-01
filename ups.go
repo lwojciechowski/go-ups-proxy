@@ -8,7 +8,6 @@ import (
 )
 
 const (
-	upsTrackingURL   = "https://wwwcie.ups.com/rest/Track"
 	upsRequestString = `
 		{
 			"UPSSecurity": {
@@ -35,6 +34,16 @@ const (
 
 var upsRequestTpl = template.Must(template.New("upsRequest").Parse(upsRequestString))
 
+func getTrackingURL() string {
+	isProd := os.Getenv("APP_ENV") == "production"
+
+	if isProd {
+		return "https://onlinetools.ups.com/rest/Track"
+	} else {
+		return "https://wwwcie.ups.com/rest/Track"
+	}
+}
+
 func QueryUPS(tracking string) *http.Response {
 	client := &http.Client{}
 	pr, pw := io.Pipe()
@@ -50,7 +59,7 @@ func QueryUPS(tracking string) *http.Response {
 		pw.Close()
 	}()
 
-	resp, _ := client.Post(upsTrackingURL, "application/json", pr)
+	resp, _ := client.Post(getTrackingURL(), "application/json", pr)
 
 	return resp
 }

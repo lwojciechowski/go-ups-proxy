@@ -4,13 +4,10 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
 )
 
-type Proxy struct{}
-
-func NewProxy() *Proxy { return &Proxy{} }
-
-func (p *Proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func handleRequests(w http.ResponseWriter, r *http.Request) {
 	switch r.URL.Path {
 	case "/ups":
 		tracking := r.URL.Query().Get("tracking")
@@ -33,10 +30,26 @@ func (p *Proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func enableCors(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		next.ServeHTTP(w, r)
+	})
+}
+
 func main() {
-	proxy := NewProxy()
+	finalHandler := http.HandlerFunc(handleRequests)
+	mux := http.NewServeMux()
+	mux.Handle("/", enableCors(finalHandler))
+
 	log.Println("Server running")
-	err := http.ListenAndServe(":54321", proxy)
+	port := os.Getenv("PORT")
+
+	if port == "" {
+		port = "54321"
+	}
+
+	err := http.ListenAndServe(":"+port, mux)
 
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err.Error())
